@@ -20,7 +20,6 @@ class ContributorViewSet(ModelViewSet):
     queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
 
-
 class IssueViewSet(ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
