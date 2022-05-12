@@ -13,7 +13,7 @@ class Project(models.Model):
         ('Android','Android')
     )
     type = models.CharField(max_length=128,  choices=type_choices)
-    # author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
+    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
 
 class Contributor(models.Model):
     user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )  #on delete??
@@ -50,7 +50,7 @@ class Issue(models.Model):
     assignee_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, default=author_user_id, on_delete=models.CASCADE, related_name='assignee')
     created_time = models.DateTimeField(auto_now_add=True)
 
-class Comment(models.Model):
+class Comments(models.Model):
     description = models.CharField(max_length=500)
     author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete= models.CASCADE)
     issue_id = models.ForeignKey(to=Issue, on_delete=models.CASCADE)

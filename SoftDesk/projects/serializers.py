@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from .models import Comment, Contributor, Issue, Project
+from .models import Comments, Contributor, Issue, Project
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -56,5 +56,5 @@ class IssueSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
+        model = Comments
         fields = "__all__"
