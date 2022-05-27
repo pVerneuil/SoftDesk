@@ -2,12 +2,6 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from .models import Contributor, Issue, Project, Comments
 
-
-# class IsAuthorPermission(BasePermission):
-#     def has_object_permission(self, request, view, obj):
-#         if request.method in ['DELETE','PUT']:
-#             return request.user == obj.author_user_id
-
 # TODO trouver un meilleur nom
 class IsContributorPermission(BasePermission):
     def has_object_permission(self, request, view, obj):

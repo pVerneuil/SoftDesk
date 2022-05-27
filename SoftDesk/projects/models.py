@@ -16,10 +16,12 @@ class Project(models.Model):
     author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
 
 class Contributor(models.Model):
-    user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )  #on delete??
+    # https://docs.djangoproject.com/en/4.0/ref/models/options/#django.db.models.Options.constraints
+    user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     permissions = models.CharField(max_length=128)
     role = models.CharField(max_length=128)
+    
 
 class Issue(models.Model):
     title = models.CharField(max_length=128)
@@ -41,7 +43,7 @@ class Issue(models.Model):
     project_id  = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     
     status_choices= (
-        ('TODO','Â faire'),
+        ('TODO','À faire'),
         ('INPROGRESS','En cours'),
         ('COMPLETE','Terminé')
     )

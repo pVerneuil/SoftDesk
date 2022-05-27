@@ -20,7 +20,7 @@ urlpatterns = [
     path('signup/', RegisterView.as_view(),),   
     path('login/', TokenObtainPairView.as_view()),
     path('api/token/refresh', TokenRefreshView.as_view()),
-    path('',include(router.urls)),
-    path('', include(project_router.urls)),
-    path('', include(issue_router.urls)),
+    path(r'',include(router.urls)),
+    path(r'', include(project_router.urls)),
+    path(r'', include(issue_router.urls)),
 ]

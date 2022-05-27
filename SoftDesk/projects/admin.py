@@ -1,5 +1,6 @@
+from xml.etree.ElementTree import Comment
 from django.contrib import admin
-from .models import Issue, Project, Contributor
+from .models import Issue, Project, Contributor, Comments
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
@@ -12,3 +13,7 @@ class ContributorAdmin(admin.ModelAdmin):
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
     list_display = ('title','desc','project_id','priority','tag','status')
+    
+@admin.register(Comments)
+class CommentsAdmin(admin.ModelAdmin):
+    list_display = ('description','issue_id','author_user_id','created_time')
