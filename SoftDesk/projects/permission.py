@@ -3,24 +3,22 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 from .models import Contributor, Issue, Project, Comments
 
 # TODO trouver un meilleur nom
-class IsContributorPermission(BasePermission):
+class IsContributorOrAuthorPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
+        print('permission called')
         if request.method in SAFE_METHODS:
             if isinstance(obj, Project):
-                return Contributor.objects.filter(
-                    project_id = obj.id, 
-                    user_id = request.user.id
-                    )
+                project = obj.id
+                print('instance : Project')
             if isinstance(obj, Issue):
-                return Contributor.objects.filter(
-                    project_id = obj.project_id, 
-                    user_id = request.user.id
-                    )
+                project = obj.project_id, 
+                print('instance : Issue')
             if isinstance(obj, Comments):
                 related_issue = Issue.objects.get(id = obj.issue_id)
-                return Contributor.objects.filter(
-                project_id = related_issue.project_id, 
-                user_id = request.user.id
-                )
+                project = related_issue.project_id
+                print('instance : Comments')
+            return Contributor.objects.filter(
+                    project_id = project ,user_id = request.user.id
+                    ) or request.user == obj.author_user_id
         if request.method in ['DELETE','PUT']:
             return request.user == obj.author_user_id

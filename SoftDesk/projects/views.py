@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 from .models import Comments, Contributor, Project, Issue
 from .serializers import RegisterSerializer, ContributorSerializer, IssueSerializer, CommentSerializer, ProjectSerializer
-from .permission import IsContributorPermission
+from .permission import IsContributorOrAuthorPermission
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -19,10 +19,9 @@ class RegisterView(generics.CreateAPIView):
         # return chain(projects_user_is_contibutor_of, Project.objects.filter(author_user_id=self.request.user))
 #! https://github.com/alanjds/drf-nested-routers/blob/master/README.md solve the urls problem
 class ProjectViewSet(ModelViewSet):
-    permission_classes = [ IsContributorPermission]
+    permission_classes = [ IsContributorOrAuthorPermission,]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    
     def list(self, request, ):
         queryset = Project.objects.filter()
         serializer = ProjectSerializer(queryset, many=True)
@@ -54,7 +53,7 @@ class ContributorViewSet(ModelViewSet):
 
 class IssueViewSet(ModelViewSet):
 
-    permission_classes = [IsContributorPermission]
+    permission_classes = [IsContributorOrAuthorPermission]
     serializer_class = IssueSerializer
     
     def list(self, request, projects_pk=None):
@@ -69,7 +68,7 @@ class IssueViewSet(ModelViewSet):
         return Response(serializer.data)
 
 class CommentViewSet(ModelViewSet): #!verify issue_id_id
-    permission_classes = [IsContributorPermission]
+    permission_classes = [IsContributorOrAuthorPermission]
     serializer_class = CommentSerializer 
     
     def list(self, request, projects_pk=None, issue_pk=None):
