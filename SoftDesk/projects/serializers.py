@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from .models import Comments, Contributor, Issue, Project
+from .models import Comment, Contributor, Issue, Project
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -43,22 +43,30 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
-        extra_kwargs = {'author_user_id': {'required': False}}
-
+        extra_kwargs = {'author': {'required': False}}
 class ContributorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contributor
         fields = "__all__"
-
+        extra_kwargs = {
+            'project': {'required': False},
+            }
 class IssueSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Issue
         fields = "__all__"
-        extra_kwargs = {'author_user_id': {'required': False}}
-
+        extra_kwargs = {
+            'author': {'required': False},
+            'project': {'required': False},
+            }
+        
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comments
+        model = Comment
         fields = "__all__"
-        extra_kwargs = {'author_user_id': {'required': False}}
+        extra_kwargs = {
+            'author': {'required': False},
+            'issue': {'required': False},
+            }
 

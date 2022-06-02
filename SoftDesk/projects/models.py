@@ -1,3 +1,5 @@
+from email.policy import default
+from pickle import NONE
 from django.conf import settings
 from django.db import models
 
@@ -13,13 +15,16 @@ class Project(models.Model):
         ('Android','Android')
     )
     type = models.CharField(max_length=128,  choices=type_choices)
-    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
+    author = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
 
 class Contributor(models.Model):
-    # https://docs.djangoproject.com/en/4.0/ref/models/options/#django.db.models.Options.constraints
-    user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
-    project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
-    permissions = models.CharField(max_length=128)
+    PERMISSION_CHOICES = (
+    ('manager', 'Manager'),
+    ('contributor', 'Contributeur'),
+)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE )
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    permissions = models.CharField(max_length=128, choices= PERMISSION_CHOICES)
     role = models.CharField(max_length=128)
     
 
@@ -40,7 +45,7 @@ class Issue(models.Model):
         ('TASK','TÂCHE')
     )
     tag = models.CharField(max_length=128, choices=tag_choices)
-    project_id  = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    project  = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     
     status_choices= (
         ('TODO','À faire'),
@@ -48,12 +53,12 @@ class Issue(models.Model):
         ('COMPLETE','Terminé')
     )
     status = models.CharField(max_length=128, choices = status_choices)
-    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete= models.CASCADE,related_name='autor')
-    assignee_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, default=author_user_id, on_delete=models.CASCADE, related_name='assignee')
+    author = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete= models.CASCADE,related_name='author')
+    assignee = models.ForeignKey(to=settings.AUTH_USER_MODEL , blank=True, null= True, on_delete=models.CASCADE, related_name='assignee')
     created_time = models.DateTimeField(auto_now_add=True)
 
-class Comments(models.Model):
+class Comment(models.Model):
     description = models.CharField(max_length=500)
-    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete= models.CASCADE)
-    issue_id = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
+    author = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete= models.CASCADE)
+    issue = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
