@@ -7,40 +7,53 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
 from .models import Comment, Contributor, Project, Issue
-from .serializers import RegisterSerializer, ContributorSerializer, IssueSerializer, CommentSerializer, ProjectSerializer
+from .serializers import (
+    RegisterSerializer,
+    ContributorSerializer,
+    IssueSerializer,
+    CommentSerializer,
+    ProjectSerializer,
+)
 from .permission import IsContributorOrAuthorPermission, ContributorsPermission
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+
+
 class ProjectViewSet(ModelViewSet):
-    permission_classes = [ IsContributorOrAuthorPermission,]
+    permission_classes = [
+        IsContributorOrAuthorPermission,
+    ]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    
+
     def create(self, request):
-        serializer = ProjectSerializer(
-            context={'request': request}, data=request.data)
+        serializer = ProjectSerializer(context={"request": request}, data=request.data)
         if serializer.is_valid():
             serializer.save(author=self.request.user)
             contributor = Contributor(
                 user=self.request.user,
                 project=Project.objects.last(),
-                permissions='manager',
-                role='Project Manager',
+                permissions="manager",
+                role="Project Manager",
             )
             contributor.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ContributorViewSet(ModelViewSet): 
+class ContributorViewSet(ModelViewSet):
     #! permissions to do: only manager or author can add (POST) contibutors
-    
+
     serializer_class = ContributorSerializer
-    permissions_classes=[IsContributorOrAuthorPermission, ContributorsPermission,]
-    
+    permissions_classes = [
+        IsContributorOrAuthorPermission,
+        ContributorsPermission,
+    ]
+
     def list(self, request, project_pk=None):
         project = get_object_or_404(Project, pk=project_pk)
         self.check_object_permissions(request, project)
@@ -53,7 +66,9 @@ class ContributorViewSet(ModelViewSet):
     def create(self, request, project_pk=None):
         project = get_object_or_404(Project, pk=project_pk)
         self.check_object_permissions(request, project)
-        serializer = ContributorSerializer(data=request.data,context={'request': request, 'project': project_pk})
+        serializer = ContributorSerializer(
+            data=request.data, context={"request": request, "project": project_pk}
+        )
         if serializer.is_valid():
             serializer.save(project=Project.objects.get(pk=project_pk))
             return Response(status=status.HTTP_201_CREATED)
@@ -66,13 +81,12 @@ class ContributorViewSet(ModelViewSet):
         contributor.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    
-
 
 class IssueViewSet(ModelViewSet):
 
     permission_classes = [IsContributorOrAuthorPermission]
     serializer_class = IssueSerializer
+
     def list(self, request, project_pk=None):
         project = get_object_or_404(Project, pk=project_pk)
         self.check_object_permissions(request, project)
@@ -86,16 +100,16 @@ class IssueViewSet(ModelViewSet):
         self.check_object_permissions(request, issue)
         serializer = IssueSerializer(issue)
         return Response(serializer.data)
-    
+
     def create(self, request, project_pk=None):
         project = get_object_or_404(Project, pk=project_pk)
         self.check_object_permissions(request, project)
         serializer = IssueSerializer(
-            data=request.data, context={'request': request, 'project': project_pk})
+            data=request.data, context={"request": request, "project": project_pk}
+        )
         if serializer.is_valid():
             serializer.save(
-                author=self.request.user,
-                project=Project.objects.get(pk=project_pk)
+                author=self.request.user, project=Project.objects.get(pk=project_pk)
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -104,15 +118,18 @@ class IssueViewSet(ModelViewSet):
         queryset = Issue.objects.filter(pk=pk, project=project_pk)
         issue = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, issue)
-        serializer = IssueSerializer(issue, data=request.data, context={'request': request, 'project': project_pk})
+        serializer = IssueSerializer(
+            issue,
+            data=request.data,
+            context={"request": request, "project": project_pk},
+        )
         if serializer.is_valid():
             serializer.save(
-                author=self.request.user,
-                project=Project.objects.get(pk=project_pk)
+                author=self.request.user, project=Project.objects.get(pk=project_pk)
             )
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def destroy(self, request, pk=None, project_pk=None):
         queryset = Issue.objects.filter(pk=pk, project=project_pk)
         issue = get_object_or_404(queryset, pk=pk)
@@ -122,29 +139,24 @@ class IssueViewSet(ModelViewSet):
         for comment in comments:
             comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    
+
+
 class CommentViewSet(ModelViewSet):
     permission_classes = [IsContributorOrAuthorPermission]
-    serializer_class = CommentSerializer 
-    
+    serializer_class = CommentSerializer
+
     def list(self, request, project_pk=None, issue_pk=None):
         if not Issue.objects.filter(pk=issue_pk, project=project_pk).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
         project = get_object_or_404(Project, pk=project_pk)
         self.check_object_permissions(request, project)
-        queryset = Comment.objects.filter(
-            issue__project=project_pk,
-            issue=issue_pk
-        )
+        queryset = Comment.objects.filter(issue__project=project_pk, issue=issue_pk)
         serializer = CommentSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, project_pk=None, issue_pk=None):
         queryset = Comment.objects.filter(
-            pk=pk,
-            issue__project=project_pk,
-            issue=issue_pk
+            pk=pk, issue__project=project_pk, issue=issue_pk
         )
         comment = get_object_or_404(queryset, pk=pk)
         self.check_object_permissions(request, comment)
@@ -159,8 +171,7 @@ class CommentViewSet(ModelViewSet):
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(
-                author=self.request.user,
-                issue=Issue.objects.get(pk=issue_pk)
+                author=self.request.user, issue=Issue.objects.get(pk=issue_pk)
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -173,12 +184,11 @@ class CommentViewSet(ModelViewSet):
         serializer = CommentSerializer(comment, data=request.data)
         if serializer.is_valid():
             serializer.save(
-                author=self.request.user,
-                issue=Issue.objects.get(pk=issue_pk)
+                author=self.request.user, issue=Issue.objects.get(pk=issue_pk)
             )
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def destroy(self, request, pk=None, project_pk=None, issue_pk=None):
         if not Issue.objects.filter(pk=issue_pk, project=project_pk).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)

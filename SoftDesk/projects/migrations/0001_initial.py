@@ -15,47 +15,168 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=128)),
-                ('description', models.CharField(max_length=500)),
-                ('type', models.CharField(choices=[('back-end', 'back-end'), ('front-end', 'front-end'), ('IOS', 'IOS'), ('Android', 'Android')], max_length=128)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=128)),
+                ("description", models.CharField(max_length=500)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("back-end", "back-end"),
+                            ("front-end", "front-end"),
+                            ("IOS", "IOS"),
+                            ("Android", "Android"),
+                        ],
+                        max_length=128,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Issue',
+            name="Issue",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=128)),
-                ('desc', models.CharField(max_length=128)),
-                ('priority', models.CharField(choices=[('LOW', 'FAIBLE'), ('MED', 'MOYENNE'), ('HIGH', 'ÉLEVÉE')], max_length=128)),
-                ('tag', models.CharField(choices=[('BUG', 'BUG'), ('FEAT', 'AMÉLIORATION'), ('TASK', 'TÂCHE')], max_length=128)),
-                ('status', models.CharField(choices=[('TODO', 'Â faire'), ('INPROGRESS', 'En cours'), ('COMPLETE', 'Terminé')], max_length=128)),
-                ('created_time', models.DateTimeField(auto_now_add=True)),
-                ('assignee_user_id', models.ForeignKey(default=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='autor', to=settings.AUTH_USER_MODEL), on_delete=django.db.models.deletion.CASCADE, related_name='assignee', to=settings.AUTH_USER_MODEL)),
-                ('author_user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='autor', to=settings.AUTH_USER_MODEL)),
-                ('project_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=128)),
+                ("desc", models.CharField(max_length=128)),
+                (
+                    "priority",
+                    models.CharField(
+                        choices=[
+                            ("LOW", "FAIBLE"),
+                            ("MED", "MOYENNE"),
+                            ("HIGH", "ÉLEVÉE"),
+                        ],
+                        max_length=128,
+                    ),
+                ),
+                (
+                    "tag",
+                    models.CharField(
+                        choices=[
+                            ("BUG", "BUG"),
+                            ("FEAT", "AMÉLIORATION"),
+                            ("TASK", "TÂCHE"),
+                        ],
+                        max_length=128,
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("TODO", "Â faire"),
+                            ("INPROGRESS", "En cours"),
+                            ("COMPLETE", "Terminé"),
+                        ],
+                        max_length=128,
+                    ),
+                ),
+                ("created_time", models.DateTimeField(auto_now_add=True)),
+                (
+                    "assignee_user_id",
+                    models.ForeignKey(
+                        default=models.ForeignKey(
+                            on_delete=django.db.models.deletion.CASCADE,
+                            related_name="autor",
+                            to=settings.AUTH_USER_MODEL,
+                        ),
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="assignee",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "author_user_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="autor",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "project_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="projects.project",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Contributor',
+            name="Contributor",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('permissions', models.CharField(max_length=128)),
-                ('role', models.CharField(max_length=128)),
-                ('project_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
-                ('user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("permissions", models.CharField(max_length=128)),
+                ("role", models.CharField(max_length=128)),
+                (
+                    "project_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="projects.project",
+                    ),
+                ),
+                (
+                    "user_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.CharField(max_length=500)),
-                ('created_time', models.DateTimeField(auto_now_add=True)),
-                ('author_user_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('issue_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.issue')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.CharField(max_length=500)),
+                ("created_time", models.DateTimeField(auto_now_add=True)),
+                (
+                    "author_user_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "issue_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="projects.issue"
+                    ),
+                ),
             ],
         ),
     ]

@@ -9,18 +9,22 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('projects', '0002_alter_project_description'),
+        ("projects", "0002_alter_project_description"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Comment',
-            new_name='Comments',
+            old_name="Comment",
+            new_name="Comments",
         ),
         migrations.AddField(
-            model_name='project',
-            name='author_user_id',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="project",
+            name="author_user_id",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]

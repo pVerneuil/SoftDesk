@@ -9,61 +9,75 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('projects', '0003_rename_comment_comments_project_author_user_id'),
+        ("projects", "0003_rename_comment_comments_project_author_user_id"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Comments',
-            new_name='Comment',
+            old_name="Comments",
+            new_name="Comment",
         ),
         migrations.RenameField(
-            model_name='comment',
-            old_name='author_user_id',
-            new_name='author',
+            model_name="comment",
+            old_name="author_user_id",
+            new_name="author",
         ),
         migrations.RenameField(
-            model_name='comment',
-            old_name='issue_id',
-            new_name='issue',
+            model_name="comment",
+            old_name="issue_id",
+            new_name="issue",
         ),
         migrations.RenameField(
-            model_name='contributor',
-            old_name='project_id',
-            new_name='project',
+            model_name="contributor",
+            old_name="project_id",
+            new_name="project",
         ),
         migrations.RenameField(
-            model_name='contributor',
-            old_name='user_id',
-            new_name='user',
+            model_name="contributor",
+            old_name="user_id",
+            new_name="user",
         ),
         migrations.RenameField(
-            model_name='issue',
-            old_name='author_user_id',
-            new_name='author',
+            model_name="issue",
+            old_name="author_user_id",
+            new_name="author",
         ),
         migrations.RenameField(
-            model_name='issue',
-            old_name='project_id',
-            new_name='project',
+            model_name="issue",
+            old_name="project_id",
+            new_name="project",
         ),
         migrations.RemoveField(
-            model_name='issue',
-            name='assignee_user_id',
+            model_name="issue",
+            name="assignee_user_id",
         ),
         migrations.AddField(
-            model_name='issue',
-            name='assignee',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='assignee', to=settings.AUTH_USER_MODEL),
+            model_name="issue",
+            name="assignee",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="assignee",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='issue',
-            name='status',
-            field=models.CharField(choices=[('TODO', 'À faire'), ('INPROGRESS', 'En cours'), ('COMPLETE', 'Terminé')], max_length=128),
+            model_name="issue",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("TODO", "À faire"),
+                    ("INPROGRESS", "En cours"),
+                    ("COMPLETE", "Terminé"),
+                ],
+                max_length=128,
+            ),
         ),
         migrations.AddConstraint(
-            model_name='contributor',
-            constraint=models.UniqueConstraint(fields=('user', 'project'), name='unique_user'),
+            model_name="contributor",
+            constraint=models.UniqueConstraint(
+                fields=("user", "project"), name="unique_user"
+            ),
         ),
     ]

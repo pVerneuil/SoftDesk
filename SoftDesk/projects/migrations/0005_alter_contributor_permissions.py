@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0004_rename_comments_comment_and_more'),
+        ("projects", "0004_rename_comments_comment_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contributor',
-            name='permissions',
-            field=models.CharField(choices=[('manager', 'Manager'), ('contributor', 'Contributeur')], max_length=128),
+            model_name="contributor",
+            name="permissions",
+            field=models.CharField(
+                choices=[("manager", "Manager"), ("contributor", "Contributeur")],
+                max_length=128,
+            ),
         ),
     ]

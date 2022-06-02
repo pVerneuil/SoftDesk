@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0005_alter_contributor_permissions'),
+        ("projects", "0005_alter_contributor_permissions"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='project',
-            old_name='author_user_id',
-            new_name='author',
+            model_name="project",
+            old_name="author_user_id",
+            new_name="author",
         ),
     ]
