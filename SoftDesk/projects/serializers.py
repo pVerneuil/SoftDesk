@@ -43,6 +43,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
+        extra_kwargs = {'author_user_id': {'required': False}}
 
 class ContributorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -53,8 +54,11 @@ class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = "__all__"
+        extra_kwargs = {'author_user_id': {'required': False}}
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
         fields = "__all__"
+        extra_kwargs = {'author_user_id': {'required': False}}
+

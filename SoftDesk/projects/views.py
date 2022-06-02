@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
@@ -15,23 +15,14 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
     
-# TODO faire en sorte que user id soit rempli par request.user (search perform_create?)
-        # return chain(projects_user_is_contibutor_of, Project.objects.filter(author_user_id=self.request.user))
+# TODO 
 #! https://github.com/alanjds/drf-nested-routers/blob/master/README.md solve the urls problem
 class ProjectViewSet(ModelViewSet):
     permission_classes = [ IsContributorOrAuthorPermission,]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    def list(self, request, ):
-        queryset = Project.objects.filter()
-        serializer = ProjectSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Project.objects.filter()
-        client = get_object_or_404(queryset, pk=pk)
-        serializer = ProjectSerializer(client)
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        serializer.save(author_user_id=self.request.user)
 
 
 class ContributorViewSet(ModelViewSet):
@@ -49,6 +40,7 @@ class ContributorViewSet(ModelViewSet):
         contributors = get_object_or_404(queryset, pk=pk)
         serializer = ContributorSerializer(contributors)
         return Response(serializer.data)
+    
 
 
 class IssueViewSet(ModelViewSet):
@@ -66,6 +58,9 @@ class IssueViewSet(ModelViewSet):
         issues = get_object_or_404(queryset, pk=pk)
         serializer = IssueSerializer(issues)
         return Response(serializer.data)
+    
+    def perform_create(self, serializer):
+        serializer.save(author_user_id=self.request.user)
 
 class CommentViewSet(ModelViewSet): #!verify issue_id_id
     permission_classes = [IsContributorOrAuthorPermission]
@@ -81,3 +76,6 @@ class CommentViewSet(ModelViewSet): #!verify issue_id_id
         comment = get_object_or_404(queryset, pk=pk)
         serializer = CommentSerializer(comment)
         return Response(serializer.data)
+    
+    def perform_create(self, serializer):
+        serializer.save(author_user_id=self.request.user)

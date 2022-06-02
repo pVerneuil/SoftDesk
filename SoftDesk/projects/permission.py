@@ -2,7 +2,7 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from .models import Contributor, Issue, Project, Comments
 
-# TODO trouver un meilleur nom
+#!! remove  debug print later
 class IsContributorOrAuthorPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
         print('permission called')

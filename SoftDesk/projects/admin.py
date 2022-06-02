@@ -3,7 +3,7 @@ from .models import Issue, Project, Contributor, Comments
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("id","title","description" ,"type")
+    list_display = ("id",'author_user_id' ,"title","description" ,"type")
 
 @admin.register(Contributor)
 class ContributorAdmin(admin.ModelAdmin):
