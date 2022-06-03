@@ -30,7 +30,7 @@ class Contributor(models.Model):
 
 class Issue(models.Model):
     title = models.CharField(max_length=128)
-    desc = models.CharField(max_length=128)
+    desc = models.CharField(max_length=500)
 
     priority_choices = (("LOW", "FAIBLE"), ("MED", "MOYENNE"), ("HIGH", "ÉLEVÉE"))
     priority = models.CharField(max_length=128, choices=priority_choices)

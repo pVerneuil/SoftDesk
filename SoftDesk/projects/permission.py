@@ -37,11 +37,6 @@ class ContributorsPermission(BasePermission):
             return Contributor.objects.filter(project=obj, user=request.user)
         if request.method in ["DELETE", "POST"]:
             print("methode post or delete")
-            print(
-                Contributor.objects.filter(
-                    project=obj, user=request.user, permissions="manager"
-                )
-            )
             return Contributor.objects.filter(
                 project_id=obj.id, user_id=request.user.id, permissions="manager"
             )

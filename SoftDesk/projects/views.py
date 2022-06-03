@@ -33,10 +33,10 @@ class ProjectViewSet(ModelViewSet):
     def create(self, request):
         serializer = ProjectSerializer(context={"request": request}, data=request.data)
         if serializer.is_valid():
-            serializer.save(author=self.request.user)
+            lastproject = serializer.save(author=self.request.user)
             contributor = Contributor(
                 user=self.request.user,
-                project=Project.objects.last(),
+                project=lastproject,
                 permissions="manager",
                 role="Project Manager",
             )
