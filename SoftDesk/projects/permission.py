@@ -3,11 +3,9 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 from .models import Contributor, Issue, Project, Comment
 
 #!! remove  debug print later
-# TODO do contributors permissions
 class IsContributorOrAuthorPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
         print("is contributor permission called")
-        print(obj)
         if request.method in SAFE_METHODS or request.method == "POST":
             print("safe methode")
             if isinstance(obj, Project):
@@ -27,12 +25,25 @@ class IsContributorOrAuthorPermission(BasePermission):
         if request.method in ["DELETE", "PUT"]:
             print("delete or PUT")
             return request.user == obj.author
+        else:
+            return False
 
 
 class ContributorsPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
-        # if request.method in SAFE_METHODS:
-        #     return Contributor.objects.filter(
-        #             project_id = obj.id ,user_id = request.user.id
-        #             )
-        return False
+        print("contributor permission called")
+        if request.method in SAFE_METHODS:
+            print("methode safe")
+            return Contributor.objects.filter(project=obj, user=request.user)
+        if request.method in ["DELETE", "POST"]:
+            print("methode post or delete")
+            print(
+                Contributor.objects.filter(
+                    project=obj, user=request.user, permissions="manager"
+                )
+            )
+            return Contributor.objects.filter(
+                project_id=obj.id, user_id=request.user.id, permissions="manager"
+            )
+        else:
+            return False

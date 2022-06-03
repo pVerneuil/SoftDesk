@@ -46,19 +46,14 @@ class ProjectViewSet(ModelViewSet):
 
 
 class ContributorViewSet(ModelViewSet):
-    #! permissions to do: only manager or author can add (POST) contibutors
-
     serializer_class = ContributorSerializer
-    permissions_classes = [
-        IsContributorOrAuthorPermission,
+    permission_classes = [
         ContributorsPermission,
     ]
 
     def list(self, request, project_pk=None):
         project = get_object_or_404(Project, pk=project_pk)
         self.check_object_permissions(request, project)
-        if not Project.objects.filter(pk=project_pk):
-            return Response(status=status.HTTP_404_NOT_FOUND)
         queryset = Contributor.objects.filter(project=project_pk)
         serializer = ContributorSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -77,7 +72,8 @@ class ContributorViewSet(ModelViewSet):
     def destroy(self, request, pk=None, project_pk=None):
         queryset = Contributor.objects.filter(pk=pk, project=project_pk)
         contributor = get_object_or_404(queryset, pk=pk)
-        self.check_object_permissions(request, contributor)
+        project = get_object_or_404(Project, pk=project_pk)
+        self.check_object_permissions(request, project)
         contributor.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

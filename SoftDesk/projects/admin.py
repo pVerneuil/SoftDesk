@@ -19,7 +19,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Contributor)
 class ContributorAdmin(admin.ModelAdmin):
-    list_display = ("user_id", "project_id", "permissions", "role")
+    list_display = ("id", "user", "project_id", "permissions", "role")
 
 
 @admin.register(Issue)
